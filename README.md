@@ -1,3 +1,7 @@
+# fSync
+
+A server synchronization system designed to sync player and world data efficiently. Utilizes MongoDB for persistent storage and Redis with multi-region support to provide low-latency performance across servers in different regions.
+
 # fSync ExternalDataProvider API
 
 This guide explains how to extend the `fSync` system with your own data fields using the `ExternalDataProvider` interface.
@@ -31,10 +35,6 @@ public class ShardsDataProvider implements ExternalDataProvider {
         return shardCache.getOrDefault(uuid, 0L);
     }
 
-    public void removeProfile(UUID uuid) {
-        shardCache.remove(uuid);
-    }
-
     @Override
     public void writeToDocument(UUID uuid, Document target) {
         Long shards = shardCache.get(uuid);
@@ -50,6 +50,11 @@ public class ShardsDataProvider implements ExternalDataProvider {
             shardCache.put(uuid, ((Number) value).longValue());
         }
     }
+
+    @Override
+    public void remove(UUID uuid) {
+        shardCache.remove(uuid);
+    }
 }
 ```
 
@@ -61,19 +66,6 @@ Call this during plugin startup **before any players join**:
 
 ```java
 PlayerProfile.registerExternalProvider(new ShardsDataProvider());
-```
-
----
-
-## 🚪 Clear on Quit (Optional)
-
-If you want to remove your cache manually on quit:
-
-```java
-@EventHandler
-public void onQuit(PlayerQuitEvent event) {
-    shardsProvider.removeProfile(event.getPlayer().getUniqueId());
-}
 ```
 
 ---
