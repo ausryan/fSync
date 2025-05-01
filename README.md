@@ -2,6 +2,8 @@
 
 A server synchronization system designed to sync player and world data efficiently. Utilizes MongoDB for persistent storage and Redis with multi-region support to provide low-latency performance across servers in different regions.
 
+Made for play.fadehq.com
+
 # fSync ExternalDataProvider API
 
 This guide explains how to extend the `fSync` system with your own data fields using the `ExternalDataProvider` interface.
