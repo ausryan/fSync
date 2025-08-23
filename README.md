@@ -152,5 +152,4 @@ PlayerProfile.registerExternalProvider(new ShardsDataProvider());
 ## 📌 Summary
 
 - Works with both Redis and MongoDB
-- Supports hot plugin reloads and restarts
 - Keeps your logic modular and independent
