@@ -60,6 +60,83 @@ public class ShardsDataProvider implements ExternalDataProvider {
 }
 ```
 
+```java
+public class HomesDataProvider implements ExternalDataProvider {
+
+    private final Map<UUID, Map<String, Home>> homeCache = new HashMap<>();
+
+    public void setHome(UUID uuid, String name, Home home) {
+        homeCache.computeIfAbsent(uuid, k -> new HashMap<>()).put(name.toLowerCase(), home);
+    }
+
+    public void deleteHome(UUID uuid, String name) {
+        Map<String, Home> homes = homeCache.get(uuid);
+        if (homes != null) {
+            homes.remove(name.toLowerCase());
+            if (homes.isEmpty()) {
+                homeCache.remove(uuid);
+            }
+        }
+    }
+
+    public Home getHome(UUID uuid, String name) {
+        return homeCache.getOrDefault(uuid, Collections.emptyMap()).get(name.toLowerCase());
+    }
+
+    public Map<String, Home> getHomes(UUID uuid) {
+        return Collections.unmodifiableMap(homeCache.getOrDefault(uuid, Collections.emptyMap()));
+    }
+
+    @Override
+    public void writeToDocument(UUID uuid, Document target) {
+        Map<String, Home> homes = homeCache.get(uuid);
+        if (homes == null) return;
+
+        Document homesDoc = new Document();
+        for (Map.Entry<String, Home> entry : homes.entrySet()) {
+            Home h = entry.getValue();
+            homesDoc.append(entry.getKey(), new Document()
+                    .append("world", h.world())
+                    .append("x", h.x())
+                    .append("y", h.y())
+                    .append("z", h.z())
+                    .append("yaw", h.yaw())
+                    .append("pitch", h.pitch())
+                    .append("server", h.server()));
+        }
+        target.append("homes", homesDoc);
+    }
+
+    @Override
+    public void readFromDocument(UUID uuid, Document source) {
+        Map<String, Home> homes = new HashMap<>();
+        Document homesDoc = (Document) source.get("homes");
+        if (homesDoc != null) {
+            for (String key : homesDoc.keySet()) {
+                Document h = (Document) homesDoc.get(key);
+                homes.put(key, new Home(
+                        h.getString("world"),
+                        h.getDouble("x"),
+                        h.getDouble("y"),
+                        h.getDouble("z"),
+                        h.getDouble("yaw").floatValue(),
+                        h.getDouble("pitch").floatValue(),
+                        h.getString("server")
+                ));
+            }
+        }
+        homeCache.put(uuid, homes);
+    }
+
+    @Override
+    public void remove(UUID uuid) {
+        homeCache.remove(uuid);
+    }
+
+    public record Home(String world, double x, double y, double z, float yaw, float pitch, String server) {}
+}
+```
+
 ---
 
 ## 🧩 Register Your Provider
