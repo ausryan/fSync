@@ -1,0 +1,22 @@
+# Server name
+server: "name"
+
+# Region used for reads. Leave as none if you do not have replication Redis servers.
+region: "none"
+replicas: 2
+region-host: "localhost"
+region-port: 6379
+region-password: "foorbar"
+
+# Master
+mongodb:
+  host: "null"
+  port: 27017
+  username: "yourUsername"
+  password: "yourPassword"
+  database: "yourDatabase"
+redis:
+  host: "null"
+  port: 6379
+  password: "yourPassword"
+  database: 0

@@ -1,0 +1,15 @@
+name: fSync
+version: '1.0-SNAPSHOT'
+main: com.fadehq.fsync.fSync
+api-version: '1.21'
+author: Ryan (OgAussieLag)
+description: A server synchronization system designed to sync player and world data efficiently. Utilizes MongoDB for persistent storage and Redis with multi-region support to provide low-latency performance across servers in different regions.
+website: https://github.com/ausryan/fSync/tree/main
+depend: [fLibraries]
+commands:
+  fsync:
+    description: Description of the plugin.
+    aliases:
+      - sync
+    permission: fade.player
+    permission-message: "§cYou are not permitted to do this!"
