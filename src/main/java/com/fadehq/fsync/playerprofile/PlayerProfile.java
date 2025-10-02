@@ -26,9 +26,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class PlayerProfile {
 
-    // TODO: Fix replicas.. currently set to '0', but should be '1' -- doesn't work on 1, unless you actually
-    //  have a second Redis DB. Maybe add an option in config.yml (do this with a comment above it)
-
     private static final Gson GSON = new Gson();
 
     private final UUID uuid;
